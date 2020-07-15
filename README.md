@@ -24,10 +24,7 @@ that Sparkify's analytics can use these tables for their analysis.
 
 1. Create an AWS S3 bucket (with your own path to output_data)
 2. Add (or create a new IAM and add) the required AWS login credentials to the dl.cfg file
-3. Move project directory from local to EMR
-''scp -i <.pem-file> <Local-Path> <username>@<EMR-MasterNode-Endpoint>:~<EMR-path>''
-4. Run Spark job:
-''spark-submit etl.py --master yarn --deploy-mode client --driver-memory 4g --num-executors 2 --executor-memory 2g --executor-core 2''
+3. In terminal type python etl.py
 
 Or log in AWS console and set up AWS EMR cluster with Hadoop, Spark, Hive, Livy and run ETL-for-AWS-S3 -notebook in Jupyter notebook's environment
 
