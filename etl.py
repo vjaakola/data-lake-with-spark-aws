@@ -10,8 +10,11 @@ config = configparser.ConfigParser()
 config.read('dl.cfg')
 
 # AWS loading credentials from config file dl.cfg 
-os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+#os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
+#os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+
+os.environ["AWS_ACCESS_KEY_ID"]= config['AWS']['AWS_ACCESS_KEY_ID']
+os.environ["AWS_SECRET_ACCESS_KEY"]= config['AWS']['AWS_SECRET_ACCESS_KEY']
 
 # Create spark session with hadoop-aws package
 def create_spark_session():
@@ -27,7 +30,12 @@ Load and process song data, create songs and artist tables, write parquet files
 
 def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
-    song_data = input_data + 'song_data' + '/*/*/*/*.json'
+    # here is a smaller dataset, original dataset path below:
+    #song_data = input_data + 'song_data' + '/*/*/*/*.json'
+    
+    song_data = input_data + 'song_data' + '/A/A/A/*.json'
+    song_df = spark.read.json(song_data)
+    
     
     # read song data file
     df = spark.read.json(song_data)
@@ -71,7 +79,7 @@ def process_log_data(spark, input_data, output_data):
     # extract columns for users table    
     users_table = spark.sql("""
     select distinct userId, firstName, lastName, gender, level
-    from logs_data where userId is not nul""")
+    from logs_data where userId is not null""")
     
     # write users table to parquet files
     users_table.write.mode('overwrite').parquet(output_data + "users_table")
@@ -104,6 +112,8 @@ def process_log_data(spark, input_data, output_data):
     time_table.write.mode('overwrite').partitionBy('year', 'month').parquet(output_data + 'time_table')
 
     # read in song data to use for songplays table
+    # here is a smaller dataset, original dataset path is input_data + 'song_data' + '/*/*/*/*.json'
+    song_data = input_data + 'song_data' + '/A/A/A/*.json'
     song_df = spark.read.json(song_data)
     
     #create temp log and song tables
